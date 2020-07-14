@@ -30,14 +30,21 @@ module.exports = (body) => {
     
             await page.goto(body[2], { waitUntil: "networkidle2", timeout: 0 });
 
+            log(33, await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > h2")));
             const title = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > h2").innerText);
+
+            log(36, await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div.jsx-1628157066.jsx-1671252735.unit-information")));
             const short_desc = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div.jsx-1628157066.jsx-1671252735.unit-information").innerText);
+
+            log(39, await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div.jsx-1628157066.jsx-1671252735.description")));
             const long_desc = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div.jsx-1628157066.jsx-1671252735.description").innerText);
 
+            log(42, await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div:nth-child(3) > span")));
             const regular_price_exist = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div:nth-child(3) > span"));
 
             let regular_price;
             if(!_.isNil(regular_price_exist)) {
+                log(47, await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div:nth-child(3) > span")));
                 regular_price = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div:nth-child(3) > span").innerText);
 
                 if(_.isEmpty(regular_price)) regular_price = undefined;
@@ -51,6 +58,7 @@ module.exports = (body) => {
                 }
             }
 
+            log(61, await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div.jsx-1628157066.jsx-1671252735.price > span.jsx-1628157066.jsx-1671252735.display-price")));
             let sale_price = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div.jsx-1628157066.jsx-1671252735.price > span.jsx-1628157066.jsx-1671252735.display-price").innerText);
                 sale_price = _.replace(sale_price, 'Rp', '');
                 sale_price = _.replace(sale_price, 'IDR', '');
@@ -59,6 +67,7 @@ module.exports = (body) => {
                 sale_price = _.replace(sale_price, /\s/g, '');
                 sale_price = _.toNumber(sale_price);
 
+            log(70, await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-4 > div > div > div > div > div > div > div > div > div > div > figure > div:nth-child(2) > img:nth-child(2)")));
             const images = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-4 > div > div > div > div > div > div > div > div > div > div > figure > div:nth-child(2) > img:nth-child(2)").src);
 
             await browser.close();
