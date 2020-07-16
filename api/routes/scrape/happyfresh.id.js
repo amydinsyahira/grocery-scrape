@@ -28,7 +28,7 @@ module.exports = (body) => {
                 else req.continue();
             }); */
     
-            await page.goto(body[2], { waitUntil: "networkidle2", timeout: 0 });
+            await page.goto(body[2], { waitUntil: "networkidle0", timeout: 0 });
 
             log(33, await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > h2")));
             const title = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > h2").innerText);
@@ -67,8 +67,8 @@ module.exports = (body) => {
                 sale_price = _.replace(sale_price, /\s/g, '');
                 sale_price = _.toNumber(sale_price);
 
-            log(70, await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-4 > div > div > div > div > div > div > div > div > div > div > figure > div:nth-child(2) > img:nth-child(2)")));
-            const images = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-4 > div > div > div > div > div > div > div > div > div > div > figure > div:nth-child(2) > img:nth-child(2)").src);
+            log(70, await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-4 > div > div > div > div > div > div > div > div > div > div > figure > div:nth-child(2) > img")));
+            const images = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-4 > div > div > div > div > div > div > div > div > div > div > figure > div:nth-child(2) > img").src);
 
             await browser.close();
             return [

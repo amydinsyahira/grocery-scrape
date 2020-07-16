@@ -28,7 +28,7 @@ module.exports = (body) => {
                 else req.continue();
             }); */
     
-            await page.goto(body[2], { waitUntil: "networkidle2", timeout: 0 });
+            await page.goto(body[2], { waitUntil: "networkidle0", timeout: 0 });
 
             log(33, await page.evaluate(() => document.querySelector("#__layout > div > div:nth-child(2) > main > div > div:nth-child(2) > div.col-sm-9 > div > div > h3")));
             const title = await page.evaluate(() => document.querySelector("#__layout > div > div:nth-child(2) > main > div > div:nth-child(2) > div.col-sm-9 > div > div > h3").innerText);
