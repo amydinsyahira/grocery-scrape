@@ -1,5 +1,6 @@
 import Head from 'next/head'
-import { useState, useEffect } from 'react'
+import getConfig from 'next/config'
+import { useState } from 'react'
 import { Container, Row, Card, Button, Form, Spinner, ProgressBar } from 'react-bootstrap'
 import _ from 'lodash'
 import axios from 'axios'
@@ -7,66 +8,70 @@ import moment from 'moment'
 import CSVReader from 'react-csv-reader'
 import { CSVLink } from 'react-csv';
 
+const { publicRuntimeConfig } = getConfig();
+const { API_PATH } = publicRuntimeConfig;
+
 export default function Home() {
   const [isLoading, setLoading] = useState(false)
   const [nowProgress, setNowProgress] = useState(0)
   const [dataCsv, setDataCsv] = useState([])
   const [resultCsv, setResultCsv] = useState([])
-
-  useEffect(() => {
-    if(nowProgress && _.eq(nowProgress, 0)) return;
-    if(nowProgress && _.lt(nowProgress, 100)) {
-      if(!isLoading) return;
-      simulateProgress().then(() => {
-        let progress = _.clone(nowProgress);
-            progress = _.add(progress, _.random(1, 5));
-
-        if(!isLoading) return;
-
-        if(_.gte(progress, 100)) {
-          setNowProgress(100);
-        } else {
-          setNowProgress(progress);
-        }
-      })
-    }
-  }, [nowProgress]);
-
-  const simulateProgress = () => {
-    return new Promise((resolve) => setTimeout(resolve, _.random(1000, 5000)));
-  }
+  const [failedCsv, setFailedCsv] = useState([])
 
   const handleFileLoad = (data, fileInfo) => {
     setDataCsv(data)
     setResultCsv([])
+    setFailedCsv([]);
     setNowProgress(0)
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if(_.isNil(dataCsv) || _.isEmpty(dataCsv)) return alert("Please choose csv file for scrape!");
+    setLoading(true);
 
-    setLoading(true)
-    setNowProgress(_.random(5, 20))
-    
-    try {
-      const res = await axios({
-        method: 'post',
-        url   : '/api/scrape',
-        data  : {
-          csv: dataCsv
-        }, 
-        timeout         : 0,
-        maxContentLength: 999999
-      })
+    (async function loopScrape(index, total, eachProgress, progress, dataCsv, results, failed) {
+      const csv = dataCsv[index];
 
-      setResultCsv(res.data.data)
-      setDataCsv([])
-      setNowProgress(100)
-      setTimeout(() => setLoading(false), 1000)
-    } catch (err) {
-      console.log("req err:", err)
-    }
+      progress = _.floor(_.add(eachProgress, progress))
+      index++;
+
+      if(_.gt(progress, 100)) progress = 100;
+      try {
+        if(_.isNil(csv)) {
+          setResultCsv(results);
+          setDataCsv([]);
+          setNowProgress(100);
+          return setTimeout(() => setLoading(false), 1000);
+        };
+
+        if(_.isEmpty(csv[0])) {
+          setNowProgress(progress);
+          return loopScrape(index, total, eachProgress, progress, dataCsv, results, failed);
+        };
+
+        const res = await axios({
+          method : 'post',
+          url    : `${API_PATH}/scrape`,
+          data   : { csv },
+          timeout: 0
+        });
+
+        results.push(res.data.data);
+        setNowProgress(progress);
+        loopScrape(index, total, eachProgress, progress, dataCsv, results, failed);
+      } catch (err) {
+        console.log("req err:", err);
+        failed.push(csv);
+        setNowProgress(progress);
+        setFailedCsv(failed);
+        loopScrape(index, total, eachProgress, progress, dataCsv, results, failed);
+      }
+    })(1, _.size(dataCsv), _.divide(100, _.size(dataCsv)), 0, dataCsv, [JSON.parse(publicRuntimeConfig.API_HEADER_EXPORT)], [dataCsv[0]])
   }
+
+  const marginLeft = {
+    "margin-left": "10px" 
+  };
 
   return (
     <Container className="md-container">
@@ -116,17 +121,30 @@ export default function Home() {
                   : 'Submit'}
                 </Button><br />
                 { isLoading && <div><ProgressBar animated now={nowProgress} label={`${nowProgress}%`} /><br /></div> }
+                <div align="center">
                 { !_.isEmpty(resultCsv) && 
-                  <div align="center">
-                    <CSVLink 
-                      data={resultCsv} 
-                      className="btn btn-success"
-                      filename={`wp-${moment().valueOf()}.csv`}
-                    >
-                      Download Result
-                    </CSVLink> 
-                  </div>
+                    <span>
+                      <CSVLink 
+                        data={resultCsv} 
+                        className="btn btn-success"
+                        filename={`wp-success-${moment().valueOf()}.csv`}
+                      >
+                        Success Result
+                      </CSVLink> 
+                    </span>
                 }
+                { !_.isEmpty(failedCsv) && 
+                    <span style={marginLeft}>
+                      <CSVLink 
+                        data={failedCsv} 
+                        className="btn btn-danger"
+                        filename={`wp-failed-${moment().valueOf()}.csv`}
+                      >
+                        Failed Result
+                      </CSVLink> 
+                    </span>
+                }
+                </div>
               </Card.Body>
             </Card>
           </Row>
