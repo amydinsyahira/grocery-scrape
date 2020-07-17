@@ -72,7 +72,7 @@ module.exports = (body) => {
 
             await browser.close();
             return [
-                body[0],"simple",,title,1,0,"visible",short_desc,long_desc,,,"taxable",,1,,,0,0,0,,,,1,,sale_price,regular_price,body[1],,,images,,,,,,,,,0
+                body[0],"simple",,title,1,0,"visible",short_desc,long_desc,,,"taxable",,1,,,0,0,0,,,,1,,_.isNil(regular_price) ? undefined : sale_price,_.isNil(regular_price) ? sale_price : regular_price,body[1],,,images,,,,,,,,,0
             ]
         } catch (err) {
             log(err)
