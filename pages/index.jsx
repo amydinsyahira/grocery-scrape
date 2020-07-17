@@ -29,24 +29,25 @@ export default function Home() {
     if(_.isNil(dataCsv) || _.isEmpty(dataCsv)) return alert("Please choose csv file for scrape!");
     setLoading(true);
 
-    (async function loopScrape(index, total, eachProgress, progress, dataCsv, results, failed) {
+    (async function loopScrape(index, eachProgress, progress, dataCsv, results, failed) {
       const csv = dataCsv[index];
 
-      progress = _.floor(_.add(eachProgress, progress))
+      progress = _.floor(_.add(_.toNumber(eachProgress), _.toNumber(progress)), 1);
       index++;
 
       if(_.gt(progress, 100)) progress = 100;
       try {
         if(_.isNil(csv)) {
           setResultCsv(results);
+          if(_.gt(_.size(failed), 1)) setFailedCsv(failed);
           setDataCsv([]);
           setNowProgress(100);
-          return setTimeout(() => setLoading(false), 1000);
+          return setTimeout(() => setLoading(false), 3000);
         };
 
         if(_.isEmpty(csv[0])) {
           setNowProgress(progress);
-          return loopScrape(index, total, eachProgress, progress, dataCsv, results, failed);
+          return loopScrape(index, eachProgress, progress, dataCsv, results, failed);
         };
 
         const res = await axios({
@@ -56,17 +57,22 @@ export default function Home() {
           timeout: 0
         });
 
+        if(_.isNil(res.data.data) || _.isEmpty(res.data.data)) {
+          failed.push(csv);
+          setNowProgress(progress);
+          return loopScrape(index, eachProgress, progress, dataCsv, results, failed);
+        };
+
         results.push(res.data.data);
         setNowProgress(progress);
-        loopScrape(index, total, eachProgress, progress, dataCsv, results, failed);
+        loopScrape(index, eachProgress, progress, dataCsv, results, failed);
       } catch (err) {
         console.log("req err:", err);
         failed.push(csv);
         setNowProgress(progress);
-        setFailedCsv(failed);
-        loopScrape(index, total, eachProgress, progress, dataCsv, results, failed);
+        loopScrape(index, eachProgress, progress, dataCsv, results, failed);
       }
-    })(1, _.size(dataCsv), _.divide(100, _.size(dataCsv)), 0, dataCsv, [JSON.parse(publicRuntimeConfig.API_HEADER_EXPORT)], [dataCsv[0]])
+    })(1, _.divide(100, _.size(dataCsv)), 0, dataCsv, [JSON.parse(publicRuntimeConfig.API_HEADER_EXPORT)], [dataCsv[0]])
   }
 
   const marginLeft = {
