@@ -1,14 +1,14 @@
 {
   "name": "grocery-scrape",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "author": "Amydin S",
   "license": "MIT",
   "scripts": {
     "dev": "nodemon api/app.js --watch api --watch .env",
     "next": "next build",
     "start": "NODE_ENV=production node api/app.js",
-    "build": "docker build -t grocery-scrape:1.2.2 .",
-    "deploy": "docker run --env-file=.env --name grocery-scrape --restart=always -d -p 7002:1717 -v $(pwd)/.next:/app/.next:rw grocery-scrape:1.2.2"
+    "build": "docker build -t grocery-scrape:1.2.3 .",
+    "deploy": "docker run --env-file=.env --name grocery-scrape --restart=always -d -p 7002:1717 -v $(pwd)/.next:/app/.next:rw grocery-scrape:1.2.3"
   },
   "dependencies": {
     "axios": "^0.19.2",
