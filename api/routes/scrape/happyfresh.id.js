@@ -34,10 +34,12 @@ module.exports = (body) => {
             const title = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > h2").innerText);
 
             log(36, await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div.jsx-1628157066.jsx-1671252735.unit-information")));
-            const short_desc = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div.jsx-1628157066.jsx-1671252735.unit-information").innerText);
+            let short_desc = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div.jsx-1628157066.jsx-1671252735.unit-information").innerText);
+                short_desc = _.replace(short_desc, /\n/g, ' ');
 
             log(39, await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div.jsx-1628157066.jsx-1671252735.description")));
-            const long_desc = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div.jsx-1628157066.jsx-1671252735.description").innerText);
+            let long_desc = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div.jsx-1628157066.jsx-1671252735.description").innerText);
+                long_desc = _.replace(long_desc, /\n/g, ' ');
 
             log(42, await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div:nth-child(3) > span")));
             const regular_price_exist = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div:nth-child(3) > span"));

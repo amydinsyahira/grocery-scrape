@@ -34,10 +34,12 @@ module.exports = (body) => {
             const title = await page.evaluate(() => document.querySelector("#__layout > div > div:nth-child(2) > main > div > div:nth-child(2) > div.col-sm-9 > div > div > h3").innerText);
 
             log(36, await page.evaluate(() => document.querySelector("#__layout > div > div:nth-child(2) > main > div > div:nth-child(2) > div.col-sm-9 > div > div > div:nth-child(5) > div.col-sm-7.pl-60 > div:nth-child(1) > div.col-sm-9.pl-0 > div")));
-            const short_desc = await page.evaluate(() => document.querySelector("#__layout > div > div:nth-child(2) > main > div > div:nth-child(2) > div.col-sm-9 > div > div > div:nth-child(5) > div.col-sm-7.pl-60 > div:nth-child(1) > div.col-sm-9.pl-0 > div").innerHTML);
+            let short_desc = await page.evaluate(() => document.querySelector("#__layout > div > div:nth-child(2) > main > div > div:nth-child(2) > div.col-sm-9 > div > div > div:nth-child(5) > div.col-sm-7.pl-60 > div:nth-child(1) > div.col-sm-9.pl-0 > div").innerHTML);
+                short_desc = _.replace(short_desc, /\n/g, '<br />');
 
             log(39, await page.evaluate(() => document.querySelector("#deskripsi")));
-            const long_desc = await page.evaluate(() => document.querySelector("#deskripsi").innerText);
+            let long_desc  = await page.evaluate(() => document.querySelector("#deskripsi").innerText);
+                long_desc = _.replace(long_desc, /\n/g, ' ');
 
             log(42, await page.evaluate(() => document.querySelector("#__layout > div > div:nth-child(2) > main > div > div:nth-child(2) > div.col-sm-9 > div > div > div:nth-child(5) > div.col-sm-7.pl-60 > div:nth-child(3) > div.col-sm-9.pl-0 > p.fprice")));
             const regular_price_exist = await page.evaluate(() => document.querySelector("#__layout > div > div:nth-child(2) > main > div > div:nth-child(2) > div.col-sm-9 > div > div > div:nth-child(5) > div.col-sm-7.pl-60 > div:nth-child(3) > div.col-sm-9.pl-0 > p.fprice"));
