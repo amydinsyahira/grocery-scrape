@@ -35,14 +35,15 @@ module.exports = (body) => {
 
             log(36, await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div.jsx-1628157066.jsx-1671252735.unit-information")));
             let short_desc = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div.jsx-1628157066.jsx-1671252735.unit-information").innerText);
-                short_desc = _.replace(short_desc, /\n/g, ' ');
-                short_desc = _.replace(short_desc, /\r/g, ' ');
+                short_desc = _.replace(short_desc, /\n/g, ' '); //\u2028
+                short_desc = _.replace(short_desc, /\r/g, ' '); //\u2029
                 short_desc = _.replace(short_desc, /"/g, '\'');
 
             log(39, await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div.jsx-1628157066.jsx-1671252735.description")));
             let long_desc = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div.jsx-1628157066.jsx-1671252735.description").innerText);
-                long_desc = _.replace(long_desc, /\n/g, ' ');
-                long_desc = _.replace(long_desc, /\r/g, ' ');
+                long_desc = _.replace(long_desc, /\n/g, ' '); //\u2028
+                long_desc = _.replace(long_desc, /\r/g, ' '); //\u2029
+                long_desc = _.replace(long_desc, /"/g, '\'');
 
             log(42, await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div:nth-child(3) > span")));
             const regular_price_exist = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div:nth-child(3) > span"));
