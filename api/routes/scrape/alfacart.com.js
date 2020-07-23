@@ -30,10 +30,19 @@ module.exports = (body) => {
     
             await page.goto(body[2], { waitUntil: "networkidle0", timeout: 0 });
 
-            log(33, await page.evaluate(() => document.querySelector("#__layout > div > div:nth-child(2) > main > div > div:nth-child(2) > div.col-sm-9 > div > div > h3")));
+            const page_exist = await page.evaluate(() => document.querySelector("#__layout > div > div:nth-child(2) > main > div > div:nth-child(2) > div.col-sm-9 > div > div > h3"));
+            log(33, page_exist);
+            if(_.isNull(page_exist)) {
+                await browser.close();
+                return null;
+            }
+
             const title = await page.evaluate(() => document.querySelector("#__layout > div > div:nth-child(2) > main > div > div:nth-child(2) > div.col-sm-9 > div > div > h3").innerText);
 
-            log(36, await page.evaluate(() => document.querySelector("#__layout > div > div:nth-child(2) > main > div > div:nth-child(2) > div.col-sm-9 > div > div > div:nth-child(5) > div.col-sm-7.pl-60 > div:nth-child(1) > div.col-sm-9.pl-0 > div")));
+            const alert_exist = await page.evaluate(() => document.querySelector("#__layout > div > div:nth-child(2) > main > div > div:nth-child(2) > div.col-sm-9 > div > div > div:nth-child(5) > div.col-sm-7.pl-60 > div:nth-child(1) > div > div.alert"));
+            log(36, alert_exist);
+            if(!_.isNil(alert_exist)) await page.evaluate(() => document.querySelector("#__layout > div > div:nth-child(2) > main > div > div:nth-child(2) > div.col-sm-9 > div > div > div:nth-child(5) > div.col-sm-7.pl-60 > div:nth-child(1)").remove());
+
             let short_desc = await page.evaluate(() => document.querySelector("#__layout > div > div:nth-child(2) > main > div > div:nth-child(2) > div.col-sm-9 > div > div > div:nth-child(5) > div.col-sm-7.pl-60 > div:nth-child(1) > div.col-sm-9.pl-0 > div").innerHTML);
                 short_desc = _.replace(short_desc, /\n/g, '<br />');
                 short_desc = _.replace(short_desc, /\r/g, '<br />');
@@ -75,14 +84,21 @@ module.exports = (body) => {
 
             await page.click("#slick0 > div > div > div > div > div > div > img");
 
-            log(72, await page.evaluate(() => document.querySelector("#blueimp-gallery > div")));
-            const total_images = await page.evaluate(() => document.querySelector("#blueimp-gallery > div").childElementCount);
+            const images_exist = await page.evaluate(() => document.querySelector("#blueimp-gallery > div"));
+            log(72, images_exist);
+
             let images;
-            for (let index = 1; index <= total_images; index++) {
-                log(76, await page.evaluate(num => document.querySelector(`#blueimp-gallery > div > div:nth-child(${num}) > img`), index));
-                if(_.eq(index, 1)) images = await page.evaluate(num => document.querySelector(`#blueimp-gallery > div > div:nth-child(${num}) > img`).src, index);
-                else images += ', ' + await page.evaluate(num => document.querySelector(`#blueimp-gallery > div > div:nth-child(${num}) > img`).src, index);
-            };
+            if(!_.isNil(images_exist)) {
+                const total_images = await page.evaluate(() => document.querySelector("#blueimp-gallery > div").childElementCount);
+                for (let index = 1; index <= total_images; index++) {
+                    const image_exist = await page.evaluate(num => document.querySelector(`#blueimp-gallery > div > div:nth-child(${num}) > img`), index);
+                    log(76, image_exist);
+                    if(_.isNil(image_exist)) continue;
+    
+                    if(_.eq(index, 1)) images = await page.evaluate(num => document.querySelector(`#blueimp-gallery > div > div:nth-child(${num}) > img`).src, index);
+                    else images += ', ' + await page.evaluate(num => document.querySelector(`#blueimp-gallery > div > div:nth-child(${num}) > img`).src, index);
+                }
+            }
 
             await browser.close();
             return [

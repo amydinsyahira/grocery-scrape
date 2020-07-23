@@ -30,7 +30,13 @@ module.exports = (body) => {
     
             await page.goto(body[2], { waitUntil: "networkidle0", timeout: 0 });
 
-            log(33, await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > h2")));
+            const page_exist = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > h2"));
+            log(33, page_exist);
+            if(_.isNull(page_exist)) {
+                await browser.close();
+                return null;
+            }
+
             const title = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > h2").innerText);
 
             log(36, await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div.jsx-1628157066.jsx-1671252735.unit-information")));
@@ -49,7 +55,7 @@ module.exports = (body) => {
             const regular_price_exist = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div:nth-child(3) > span"));
 
             let regular_price;
-            if(!_.isNil(regular_price_exist)) {
+            if(!_.isNull(regular_price_exist)) {
                 log(47, await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div:nth-child(3) > span")));
                 regular_price = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-8 > div > div:nth-child(3) > span").innerText);
 
@@ -73,8 +79,12 @@ module.exports = (body) => {
                 sale_price = _.replace(sale_price, /\s/g, '');
                 sale_price = _.toNumber(sale_price);
 
-            log(70, await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-4 > div > div > div > div > div > div > div > div > div > div > figure > div:nth-child(2) > img")));
-            const images = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-4 > div > div > div > div > div > div > div > div > div > div > figure > div:nth-child(2) > img").src);
+            const images_exist = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-4 > div > div > div > div > div > div.slick-list > div > div.slick-slide.slick-active.slick-current > div > div > figure > div:nth-child(2) > img:nth-child(2)"));
+            log(70, images_exist);
+
+            let images;
+            if(!_.isNull(images_exist)) images = await page.evaluate(() => document.querySelector("#__next > div > div > div > div > div.jsx-441593703.row.mt-5 > div.jsx-2435173250.col-md-4 > div > div > div > div > div > div.slick-list > div > div.slick-slide.slick-active.slick-current > div > div > figure > div:nth-child(2) > img:nth-child(2)").src);
+            log(71, images);
 
             await browser.close();
             return [
