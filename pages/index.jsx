@@ -90,7 +90,7 @@ export default function Home() {
           Welcome <a href="#">Scraper!</a>
         </h1>
         <p>
-          This site for scrape any products from <a href="https://alfacart.com/">alfacart.com</a> and <a href="https://happyfresh.id/">happyfresh.id</a> based on urls from csv file
+          This site for scrape any products from <a href="https://alfacart.com/">alfacart.com</a>, <a href="https://happyfresh.id/">happyfresh.id</a> and <a href="https://mirotakampus.com/">mirotakampus.com</a> based on urls from csv file
         </p>
         <Container>
           <Row className="justify-content-md-center">

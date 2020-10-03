@@ -50,8 +50,8 @@ module.exports = (body) => {
 
             log(39, await page.evaluate(() => document.querySelector("#deskripsi")));
             let long_desc  = await page.evaluate(() => document.querySelector("#deskripsi").innerText);
-                long_desc = _.replace(long_desc, /\n/g, ' '); //\u2028
-                long_desc = _.replace(long_desc, /\r/g, ' '); //\u2029
+                long_desc = _.replace(long_desc, /\n/g, '\\n'); //\u2028
+                long_desc = _.replace(long_desc, /\r/g, '\\r'); //\u2029
                 long_desc = _.replace(long_desc, /"/g, '\'');
 
             log(42, await page.evaluate(() => document.querySelector("#__layout > div > div:nth-child(2) > main > div > div:nth-child(2) > div.col-sm-9 > div > div > div:nth-child(5) > div.col-sm-7.pl-60 > div:nth-child(3) > div.col-sm-9.pl-0 > p.fprice")));
